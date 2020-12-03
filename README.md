@@ -1,4 +1,4 @@
-Mastermind
+# Mastermind
 
 Mastermind is a code breaking game played on a 4 x 9 board.
 When the game begins a 4 color solution is hidden in the top row
