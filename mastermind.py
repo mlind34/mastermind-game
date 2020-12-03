@@ -2,7 +2,7 @@ import sys
 import random
 import pygame
 # from setup import *
-from pygame.locals import *
+# from pygame.locals import *
 
 # window dimensions
 WINDOWWIDTH = 700
@@ -207,12 +207,12 @@ def main():
 
         events = pygame.event.get()
         for event in events:
-            if event.type == QUIT or (event.type == KEYUP and event.key == K_ESCAPE):
+            if event.type == pygame.QUIT or (event.type == pygame.KEYUP and event.key == pygame.K_ESCAPE):
                 pygame.quit()
                 sys.exit()
 
-            if event.type == KEYDOWN:
-                if event.key == K_SPACE:
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
                     intro = False
 
             keys = pygame.key.get_pressed()
@@ -229,24 +229,24 @@ def main():
                 board[turn_counter][key_pos].update(game_colors[color_track])
 
                 # left-right keys change column, up-down changes color
-                if event.type == KEYDOWN and not game_over:
-                    if keys[K_LEFT] and key_pos > 0:
+                if event.type == pygame.KEYDOWN and not game_over:
+                    if keys[pygame.K_LEFT] and key_pos > 0:
                         key_pos -= 1
-                    if keys[K_RIGHT] and key_pos < 3:
+                    if keys[pygame.K_RIGHT] and key_pos < 3:
                         key_pos += 1
                         color_track = 0
                         if key_pos == 3:
                             complete_row = True
-                    if keys[K_UP] and color_track < 5:
+                    if keys[pygame.K_UP] and color_track < 5:
                         color_track += 1
-                    if keys[K_DOWN] and color_track > 0:
+                    if keys[pygame.K_DOWN] and color_track > 0:
                         color_track -= 1
 
                     # updates board according to input
                     board[turn_counter][key_pos].update(game_colors[color_track])
 
                     # If Enter pressed, assign feedback, decrement turn_counter
-                    if keys[K_RETURN] and turn_counter >= 1 and complete_row:
+                    if keys[pygame.K_RETURN] and turn_counter >= 1 and complete_row:
                         color_track = 0
                         if assign_feedback(board, feedback, turn_counter):
                             game_over = True
@@ -264,7 +264,7 @@ def main():
                         finish_screen('c')
                         turn_counter += 1
 
-            if keys[K_SPACE] and game_over:
+            if keys[pygame.K_SPACE] and game_over:
                 main()
 
             pygame.display.update()
