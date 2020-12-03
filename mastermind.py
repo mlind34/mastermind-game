@@ -27,7 +27,7 @@ def game_board():
 
                 columns.append(square)
             else:
-                square = GameTile(j, i, GRAY, TILELOC, TILESIZE, LEFTMARGIN, TOPMARGIN, 1)
+                square = GameTile(j, i, BROWN, TILELOC, TILESIZE, LEFTMARGIN, TOPMARGIN, 1)
 
                 columns.append(square)
 
@@ -44,9 +44,9 @@ def fb_board():
         for j in range(COLUMNS):
 
             if j > 1:
-                fb_square = GameTile(j, i, GRAY, TILELOC, FBSIZE, FBLEFTMARGIN - 80, FBTOPMARGIN - 30, .5)
+                fb_square = GameTile(j, i, BROWN, TILELOC, FBSIZE, FBLEFTMARGIN - 80, FBTOPMARGIN - 30, .5)
             else:
-                fb_square = GameTile(j, i, GRAY, TILELOC, FBSIZE, FBLEFTMARGIN, FBTOPMARGIN, .5)
+                fb_square = GameTile(j, i, BROWN, TILELOC, FBSIZE, FBLEFTMARGIN, FBTOPMARGIN, .5)
             columns.append(fb_square)
 
         feedback.append(columns)
@@ -134,6 +134,10 @@ class GameTile(pygame.sprite.Sprite):
         pygame.draw.rect(SCREEN, BLACK, ((self.loc * self.rect.x * self.buff) + self.xm,
                                          (self.loc * self.rect.y) + self.ym, self.size, self.size), 10)
         self.draw()
+        return self.color
+
+    def get_color(self):
+        return self.color
 
 
 # MAIN GAME
@@ -155,28 +159,30 @@ def main():
     # set turn counter to last row
     turn_counter = ROWS - 1
 
-    # tile color options
-    game_colors = [RED, BLUE, YELLOW, GREEN, ORANGE, PURPLE]
-
     # fresh screen
     SCREEN.fill(BGCOLOR)
 
     if intro:
         start_screen()
 
+    # tile color options
+    tile_colors = [BROWN, RED, BLUE, YELLOW, GREEN, ORANGE, PURPLE]
+
     # tracks left-right and up-down to select color and column
     key_pos = 0
-    color_track = 0
+    color_index = 0
 
     # main game loop
     while True:
 
         events = pygame.event.get()
         for event in events:
+            # exit game
             if event.type == QUIT or (event.type == KEYUP and event.key == K_ESCAPE):
                 pygame.quit()
                 sys.exit()
 
+            # Start game
             if event.type == KEYDOWN:
                 if event.key == K_SPACE:
                     intro = False
@@ -184,52 +190,68 @@ def main():
             keys = pygame.key.get_pressed()
 
             if not intro and not game_over:
-                # fresh screen
-                SCREEN.fill(BOARD)
+                # fresh screen with legend
+                SCREEN.fill(BGCOLOR)
+                main_legend()
 
                 # draw boards to screen
                 draw_board(board)
                 draw_feedback(feedback)
 
-                # colors first column
-                board[turn_counter][key_pos].update(game_colors[color_track])
+                # borders first tile
+                board[turn_counter][key_pos].update(tile_colors[color_index])
 
                 # left-right keys change column, up-down changes color
                 if event.type == KEYDOWN and not game_over:
                     if keys[K_LEFT] and key_pos > 0:
+
+                        left_color = board[turn_counter][key_pos - 1].get_color()
+                        color_index = tile_colors.index(left_color)
                         key_pos -= 1
+
                     if keys[K_RIGHT] and key_pos < 3:
+
+                        right_color = board[turn_counter][key_pos + 1].get_color()
+                        color_index = tile_colors.index(right_color)
                         key_pos += 1
-                        # color_track = 0
+
                         if key_pos == 3:
                             complete_row = True
-                    if keys[K_UP] and color_track < 5:
-                        color_track += 1
-                    if keys[K_DOWN] and color_track > 0:
-                        color_track -= 1
+
+                    if keys[K_UP] and color_index < 6:
+                        color_index += 1
+                    if keys[K_DOWN] and color_index > 1:
+                        color_index -= 1
 
                     # updates board according to input
-                    board[turn_counter][key_pos].update(game_colors[color_track])
+                    board[turn_counter][key_pos].update(tile_colors[color_index])
 
                     # If Enter pressed, assign feedback, decrement turn_counter
                     if keys[K_RETURN] and turn_counter >= 1 and complete_row:
-                        color_track = 0
+                        color_index = 0
+
+                        # if player wins
                         if assign_feedback(board, feedback, turn_counter):
                             game_over = True
                             reveal_solution(board)
                             finish_screen('p')
-
                         else:
                             complete_row = False
                             turn_counter -= 1
                             key_pos = 0
 
+                    # if cpu wins
                     if turn_counter < 1:
                         reveal_solution(board)
                         game_over = True
                         finish_screen('c')
                         turn_counter += 1
 
+            # Reset Game
+            if keys[K_n]:
+                main()
+
+            # New Game
             if keys[K_SPACE] and game_over:
                 main()
 

@@ -1,12 +1,16 @@
 import pygame
 
+
+# CONSTANTS
+
 # window dimensions
 WINDOWWIDTH = 700
-WINDOWHEIGHT = 800
+WINDOWHEIGHT = 900
 
-# board tile size
+# board tile location
 TILELOC = 80
 
+# board tile size
 TILESIZE = 60
 
 # feedback tile size and margin
@@ -18,14 +22,14 @@ LEFTMARGIN = 150
 FBLEFTMARGIN = 475
 FBTOPMARGIN = 70
 
-# Screen Surface
+# screen Surface
 SCREEN = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT))
 
 # board dimensions
 ROWS = 9
 COLUMNS = 4
 
-# Tile Colors (R, G, B)
+# colors (R, G, B)
 RED = (255, 0, 0)
 YELLOW = (255, 255, 0)
 GREEN = (0, 220, 0)
@@ -33,14 +37,12 @@ BLUE = (0, 0, 255)
 ORANGE = (255, 100, 0)
 BLACK = (0, 0, 0)
 PURPLE = (150, 25, 246)
-
-# Game Colors (R, G, B)
-GRAY = (117, 69, 15)
-BOARD = (193, 147, 93)
+BROWN = (117, 69, 15)
 WHITE = (255, 255, 255)
 BGCOLOR = (193, 147, 93)
 
-# SCREENS
+
+# GAME SCREENS/TEXT
 def start_screen():
     # fonts
     font_lg = pygame.font.Font('GamePlayed-vYL7.ttf', 70)
@@ -107,10 +109,16 @@ def start_screen():
                                            rule_5_rect.bottomleft[1] + y_buffer))
     SCREEN.blit(rule_6, rule_6_rect)
 
+    # rule 7
+    rule_7 = font_sm.render('- Press [N] to reset at any time', True, color)
+    rule_7_rect = rule_7.get_rect(topleft=(rule_6_rect.bottomleft[0],
+                                           rule_6_rect.bottomleft[1] + y_buffer))
+    SCREEN.blit(rule_7, rule_7_rect)
+
     # begin
     begin = font_md.render('PRESS [SPACE] TO BEGIN', True, color)
-    begin_rect = begin.get_rect(topleft=(rule_6_rect.bottomleft[0],
-                                         rule_6_rect.bottomleft[1] + y_buffer))
+    begin_rect = begin.get_rect(topleft=(rule_7_rect.bottomleft[0],
+                                         rule_7_rect.bottomleft[1] + y_buffer))
 
     SCREEN.blit(begin, begin_rect)
 
@@ -147,3 +155,30 @@ def finish_screen(outcome):
     press_enter = font_md.render('Press [SPACE] to play again', True, BLACK)
     press_enter_rect = press_enter.get_rect(center=(WINDOWWIDTH / 2, (WINDOWHEIGHT / 5) + 350))
     SCREEN.blit(press_enter, press_enter_rect)
+
+
+def main_legend():
+    font_sm = pygame.font.Font('GamePlayed-vYL7.ttf', 14)
+
+    # legend 1
+    legend_1 = font_sm.render('White Tile = correct color in wrong position', True, BLACK)
+    legend_1_rect = legend_1.get_rect(topleft=(150, WINDOWHEIGHT - 130))
+    SCREEN.blit(legend_1, legend_1_rect)
+
+    # legend 2
+    legend_2 = font_sm.render('Black Tile = correct color in correct position', True, BLACK)
+    legend_2_rect = legend_2.get_rect(topleft=(legend_1_rect.bottomleft[0],
+                                               legend_1_rect.bottomleft[1]))
+    SCREEN.blit(legend_2, legend_2_rect)
+
+    # legend 3
+    legend_3 = font_sm.render('Order of feedback tiles do not correspond to  main tiles', True, BLACK)
+    legend_3_rect = legend_3.get_rect(topleft=(legend_2_rect.bottomleft[0],
+                                               legend_2_rect.bottomleft[1]))
+    SCREEN.blit(legend_3, legend_3_rect)
+
+    # legend 4
+    legend_4 = font_sm.render('Press [N] at any time to begin a new game', True, BLACK)
+    legend_4_rect = legend_4.get_rect(topleft=(legend_3_rect.bottomleft[0],
+                                               legend_3_rect.bottomleft[1]))
+    SCREEN.blit(legend_4, legend_4_rect)
