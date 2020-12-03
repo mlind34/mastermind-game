@@ -1,5 +1,6 @@
 import sys
 import random
+import pygame
 from setup import *
 from pygame.locals import *
 
