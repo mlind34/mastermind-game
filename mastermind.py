@@ -1,54 +1,14 @@
 import sys
 import random
-import pygame
-# from setup import *
-# from pygame.locals import *
-
-# window dimensions
-WINDOWWIDTH = 700
-WINDOWHEIGHT = 800
-
-# board tile size
-TILELOC = 80
-
-TILESIZE = 60
-
-# feedback tile size and margin
-FBSIZE = 25
-
-# board margins
-TOPMARGIN = 50
-LEFTMARGIN = 150
-FBLEFTMARGIN = 475
-FBTOPMARGIN = 70
-
-# Screen Surface
-SCREEN = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT))
-
-# board dimensions
-ROWS = 9
-COLUMNS = 4
-
-# Tile Colors (R, G, B)
-RED = (255, 0, 0)
-YELLOW = (255, 255, 0)
-GREEN = (0, 220, 0)
-BLUE = (0, 0, 255)
-ORANGE = (255, 100, 0)
-BLACK = (0, 0, 0)
-WHITE = (255, 255, 255)
-
-# Game Colors (R, G, B)
-GRAY = (169, 169, 169)
-BOARD = (71, 41, 6)
-BGCOLOR = (71, 41, 6)
+from setup import *
+from pygame.locals import *
 
 
 # GAME FUNCTIONS
 def game_board():
     """Initializes main game board matrix structure"""
     # create game solution
-    game_colors = [RED, YELLOW, BLUE, GREEN, ORANGE, WHITE]
+    game_colors = [RED, YELLOW, BLUE, GREEN, ORANGE, PURPLE]
     solution = random.sample(game_colors, 4)
 
     # add GameTile sprite for each row and column
@@ -82,7 +42,11 @@ def fb_board():
     for i in range(1, ROWS):
         columns = []
         for j in range(COLUMNS):
-            fb_square = GameTile(j, i, GRAY, TILELOC, FBSIZE, FBLEFTMARGIN, FBTOPMARGIN, .5)
+
+            if j > 1:
+                fb_square = GameTile(j, i, GRAY, TILELOC, FBSIZE, FBLEFTMARGIN - 80, FBTOPMARGIN - 30, .5)
+            else:
+                fb_square = GameTile(j, i, GRAY, TILELOC, FBSIZE, FBLEFTMARGIN, FBTOPMARGIN, .5)
             columns.append(fb_square)
 
         feedback.append(columns)
@@ -167,6 +131,8 @@ class GameTile(pygame.sprite.Sprite):
         """updates tile"""
         self.image.fill(color)
         self.color = color
+        pygame.draw.rect(SCREEN, BLACK, ((self.loc * self.rect.x * self.buff) + self.xm,
+                                         (self.loc * self.rect.y) + self.ym, self.size, self.size), 10)
         self.draw()
 
 
@@ -190,7 +156,7 @@ def main():
     turn_counter = ROWS - 1
 
     # tile color options
-    game_colors = [RED, BLUE, YELLOW, GREEN, ORANGE, WHITE]
+    game_colors = [RED, BLUE, YELLOW, GREEN, ORANGE, PURPLE]
 
     # fresh screen
     SCREEN.fill(BGCOLOR)
@@ -207,12 +173,12 @@ def main():
 
         events = pygame.event.get()
         for event in events:
-            if event.type == pygame.QUIT or (event.type == pygame.KEYUP and event.key == pygame.K_ESCAPE):
+            if event.type == QUIT or (event.type == KEYUP and event.key == K_ESCAPE):
                 pygame.quit()
                 sys.exit()
 
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE:
+            if event.type == KEYDOWN:
+                if event.key == K_SPACE:
                     intro = False
 
             keys = pygame.key.get_pressed()
@@ -229,24 +195,24 @@ def main():
                 board[turn_counter][key_pos].update(game_colors[color_track])
 
                 # left-right keys change column, up-down changes color
-                if event.type == pygame.KEYDOWN and not game_over:
-                    if keys[pygame.K_LEFT] and key_pos > 0:
+                if event.type == KEYDOWN and not game_over:
+                    if keys[K_LEFT] and key_pos > 0:
                         key_pos -= 1
-                    if keys[pygame.K_RIGHT] and key_pos < 3:
+                    if keys[K_RIGHT] and key_pos < 3:
                         key_pos += 1
-                        color_track = 0
+                        # color_track = 0
                         if key_pos == 3:
                             complete_row = True
-                    if keys[pygame.K_UP] and color_track < 5:
+                    if keys[K_UP] and color_track < 5:
                         color_track += 1
-                    if keys[pygame.K_DOWN] and color_track > 0:
+                    if keys[K_DOWN] and color_track > 0:
                         color_track -= 1
 
                     # updates board according to input
                     board[turn_counter][key_pos].update(game_colors[color_track])
 
                     # If Enter pressed, assign feedback, decrement turn_counter
-                    if keys[pygame.K_RETURN] and turn_counter >= 1 and complete_row:
+                    if keys[K_RETURN] and turn_counter >= 1 and complete_row:
                         color_track = 0
                         if assign_feedback(board, feedback, turn_counter):
                             game_over = True
@@ -264,118 +230,11 @@ def main():
                         finish_screen('c')
                         turn_counter += 1
 
-            if keys[pygame.K_SPACE] and game_over:
+            if keys[K_SPACE] and game_over:
                 main()
 
             pygame.display.update()
             clock.tick(30)
-
-
-# SCREENS
-def start_screen():
-    # fonts
-    font_lg = pygame.font.Font('GamePlayed-vYL7.ttf', 70)
-    font_md = pygame.font.Font('GamePlayed-vYL7.ttf', 25)
-    font_sm = pygame.font.Font('GamePlayed-vYL7.ttf', 14)
-
-    # display title
-    title = font_lg.render('MASTERMIND', True, WHITE)
-    title_rect = title.get_rect(center=(WINDOWWIDTH / 2, WINDOWHEIGHT / 14))
-    SCREEN.blit(title, title_rect)
-
-    # text buffers
-    y_buffer = 40
-    x_buffer = 40
-
-    # rules title
-    font_md.set_underline(True)
-    rule_title = font_md.render('Rules:', True, WHITE)
-    rule_title_rect = rule_title.get_rect(center=(title_rect.bottomleft[0] - x_buffer,
-                                                  title_rect.bottomleft[1] + y_buffer))
-    SCREEN.blit(rule_title, rule_title_rect)
-
-    # rule 1
-    rule_1 = font_sm.render('- Objective of the game is to guess the 4 color solution '
-                            'generated by the CPU', True, WHITE)
-
-    rule_1_rect = rule_1.get_rect(topleft=(rule_title_rect.center[0] - x_buffer,
-                                           rule_title_rect.center[1] + y_buffer))
-    SCREEN.blit(rule_1, rule_1_rect)
-
-    # rule 2
-    rule_2 = font_sm.render('- Select from 6 color tiles to guess the correct solution', True, WHITE)
-    rule_2_rect = rule_2.get_rect(topleft=(rule_1_rect.bottomleft[0],
-                                           rule_1_rect.bottomleft[1] + y_buffer))
-    SCREEN.blit(rule_2, rule_2_rect)
-
-    # rule 3
-    rule_3 = font_sm.render('- If guess is correct color in correct position, a black tile will '
-                            'be displayed', True, WHITE)
-
-    rule_3_rect = rule_3.get_rect(topleft=(rule_2_rect.bottomleft[0],
-                                           rule_2_rect.bottomleft[1] + y_buffer))
-    SCREEN.blit(rule_3, rule_3_rect)
-
-    # rule 4
-    rule_4 = font_sm.render('- If guess is correct color in incorrect position, a white tile will '
-                            'be displayed', True, WHITE)
-    rule_4_rect = rule_4.get_rect(topleft=(rule_3_rect.bottomleft[0],
-                                           rule_3_rect.bottomleft[1] + y_buffer))
-    SCREEN.blit(rule_4, rule_4_rect)
-
-    # rule 5
-    rule_5 = font_sm.render('- Use up and down arrow keys to select color and right and left to'
-                            'select column', True, WHITE)
-    rule_5_rect = rule_5.get_rect(topleft=(rule_4_rect.bottomleft[0],
-                                           rule_4_rect.bottomleft[1] + y_buffer))
-    SCREEN.blit(rule_5, rule_5_rect)
-
-    # rule 6
-    rule_6 = font_sm.render('- Press [ENTER] to submit guessed row', True, WHITE)
-    rule_6_rect = rule_6.get_rect(topleft=(rule_5_rect.bottomleft[0],
-                                           rule_5_rect.bottomleft[1] + y_buffer))
-    SCREEN.blit(rule_6, rule_6_rect)
-
-    # begin
-    begin = font_md.render('PRESS [SPACE] TO BEGIN', True, WHITE)
-    begin_rect = begin.get_rect(topleft=(rule_6_rect.bottomleft[0],
-                                         rule_6_rect.bottomleft[1] + y_buffer))
-
-    SCREEN.blit(begin, begin_rect)
-
-
-def finish_screen(outcome):
-    # fonts
-    font_lg = pygame.font.Font('GamePlayed-vYL7.ttf', 70)
-    font_md = pygame.font.Font('GamePlayed-vYL7.ttf', 25)
-
-    # player win
-    if outcome == 'p':
-        congrats = font_lg.render('CONGRATULATIONS!!', True, BLACK)
-        congrats_rect = congrats.get_rect(center=(WINDOWWIDTH/2, WINDOWHEIGHT/5))
-        SCREEN.blit(congrats, congrats_rect)
-
-        you_won = font_lg.render('YOU WON!!', True, BLACK)
-        you_won_rect = you_won.get_rect(center=(WINDOWWIDTH / 2, (WINDOWHEIGHT / 5) + 150))
-        SCREEN.blit(you_won, you_won_rect)
-
-    # cpu win
-    if outcome == 'c':
-        sorry = font_lg.render('SORRY :(', True, BLACK)
-        sorry_rect = sorry.get_rect(center=(WINDOWWIDTH / 2, WINDOWHEIGHT / 5))
-        SCREEN.blit(sorry, sorry_rect)
-
-        you_lost = font_lg.render('YOU LOST', True, BLACK)
-        you_lost_rect = you_lost.get_rect(center=(WINDOWWIDTH / 2, (WINDOWHEIGHT / 5) + 150))
-        SCREEN.blit(you_lost, you_lost_rect)
-
-    play_again = font_md.render('PLAY AGAIN??', True, BLACK)
-    play_again_rect = play_again.get_rect(center=(WINDOWWIDTH / 2, (WINDOWHEIGHT / 5) + 250))
-    SCREEN.blit(play_again, play_again_rect)
-
-    press_enter = font_md.render('Press [SPACE] to play again', True, BLACK)
-    press_enter_rect = press_enter.get_rect(center=(WINDOWWIDTH / 2, (WINDOWHEIGHT / 5) + 350))
-    SCREEN.blit(press_enter, press_enter_rect)
 
 
 if __name__ == '__main__':
