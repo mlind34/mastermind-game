@@ -111,31 +111,6 @@ class Game:
 
 
 if __name__ == '__main__':
-    # game initialization
-    # pygame.init()
-    # size = (700, 800)
-    # DISPLAYSURF = pygame.display.set_mode(size)
-    # pygame.display.set_caption('Mastermind')
-    #
-    # Colors (R, G, B)
-    # RED = (255, 0, 0)
-    # YELLOW = (255, 255, 0)
-    # GREEN = (0, 128, 0)
-    # BLUE = (0, 0, 255)
-    # ORANGE = (255, 165, 0)
-    # WHITE = (255, 255, 255)
-    # BOARD = (245, 245, 220)
-    # BGCOLOR = (70, 70, 90)
-    #
-    # pygame.draw.rect(DISPLAYSURF, BOARD, (350, 100, 300, 600))
-    #
-    # while True:
-    #     for event in pygame.event.get():
-    #
-    #         if event.type == pygame.QUIT:
-    #             pygame.quit()
-    #             sys.exit()
-    #         pygame.display.update()
     print('Welcome to MasterMind!')
     num_players = int(input('Would you like to play 1 Player or 2 Player? (Enter a 1 or 2)'))
     allow_duplicates = input('Allow duplicate colors in solution? (y/n)')

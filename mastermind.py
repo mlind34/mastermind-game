@@ -103,7 +103,7 @@ def reveal_solution(board):
         sol_row[i].update(sol_row[i].color)
 
 
-def check_incomplete(board, row):
+def check_complete(board, row):
     """Checks if a row is incomplete"""
     for tile in board[row]:
         if tile.color == TILE:
@@ -232,7 +232,7 @@ def main():
                     board[turn_counter][key_pos].update(tile_colors[color_index])
 
                     # If Enter pressed, assign feedback, decrement turn_counter
-                    if keys[K_RETURN] and turn_counter >= 1 and check_incomplete(board, turn_counter):
+                    if keys[K_RETURN] and turn_counter >= 1 and check_complete(board, turn_counter):
 
                         color_index = 0
 
