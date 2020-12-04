@@ -103,6 +103,14 @@ def reveal_solution(board):
         sol_row[i].update(sol_row[i].color)
 
 
+def check_incomplete(board, row):
+    """Checks if a row is incomplete"""
+    for tile in board[row]:
+        if tile.color == TILE:
+            return False
+    return True
+
+
 # TILE SPRITE CLASSES
 class GameTile(pygame.sprite.Sprite):
     """Represents game tile in main board matrix"""
@@ -150,7 +158,6 @@ def main():
     # game states
     game_over = False
     intro = True
-    complete_row = False
 
     # initialize game and feedback board
     board = game_board()
@@ -215,11 +222,9 @@ def main():
                         color_index = tile_colors.index(right_color)
                         key_pos += 1
 
-                        if key_pos == 3:
-                            complete_row = True
-
                     if keys[K_UP] and color_index < 6:
                         color_index += 1
+                        
                     if keys[K_DOWN] and color_index > 1:
                         color_index -= 1
 
@@ -227,7 +232,8 @@ def main():
                     board[turn_counter][key_pos].update(tile_colors[color_index])
 
                     # If Enter pressed, assign feedback, decrement turn_counter
-                    if keys[K_RETURN] and turn_counter >= 1 and complete_row:
+                    if keys[K_RETURN] and turn_counter >= 1 and check_incomplete(board, turn_counter):
+
                         color_index = 0
 
                         # if player wins
@@ -236,7 +242,6 @@ def main():
                             reveal_solution(board)
                             finish_screen('p')
                         else:
-                            complete_row = False
                             turn_counter -= 1
                             key_pos = 0
 
