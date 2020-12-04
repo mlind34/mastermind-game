@@ -17,5 +17,6 @@ Requirements: Python3
 
 1. Clone repository 
 2. cd mastermind-game
-3. pip3 install -r requirements.txt
-4. python3 mastermind.py
+3. Create a virtual environment (optional)
+4. pip3 install -r requirements.txt
+5. python3 mastermind.py
