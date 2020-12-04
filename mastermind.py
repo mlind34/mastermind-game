@@ -27,7 +27,7 @@ def game_board():
 
                 columns.append(square)
             else:
-                square = GameTile(j, i, BROWN, TILELOC, TILESIZE, LEFTMARGIN, TOPMARGIN, 1)
+                square = GameTile(j, i, TILE, TILELOC, TILESIZE, LEFTMARGIN, TOPMARGIN, 1)
 
                 columns.append(square)
 
@@ -44,9 +44,9 @@ def fb_board():
         for j in range(COLUMNS):
 
             if j > 1:
-                fb_square = GameTile(j, i, BROWN, TILELOC, FBSIZE, FBLEFTMARGIN - 80, FBTOPMARGIN - 30, .5)
+                fb_square = GameTile(j, i, TILE, TILELOC, FBSIZE, FBLEFTMARGIN - 80, FBTOPMARGIN - 30, .5)
             else:
-                fb_square = GameTile(j, i, BROWN, TILELOC, FBSIZE, FBLEFTMARGIN, FBTOPMARGIN, .5)
+                fb_square = GameTile(j, i, TILE, TILELOC, FBSIZE, FBLEFTMARGIN, FBTOPMARGIN, .5)
             columns.append(fb_square)
 
         feedback.append(columns)
@@ -166,7 +166,7 @@ def main():
         start_screen()
 
     # tile color options
-    tile_colors = [BROWN, RED, BLUE, YELLOW, GREEN, ORANGE, PURPLE]
+    tile_colors = [TILE, RED, BLUE, YELLOW, GREEN, ORANGE, PURPLE]
 
     # tracks left-right and up-down to select color and column
     key_pos = 0

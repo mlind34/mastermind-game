@@ -37,9 +37,10 @@ BLUE = (0, 0, 255)
 ORANGE = (255, 100, 0)
 BLACK = (0, 0, 0)
 PURPLE = (150, 25, 246)
-BROWN = (117, 69, 15)
 WHITE = (255, 255, 255)
-BGCOLOR = (193, 147, 93)
+TILE = (109, 120, 138)
+BGCOLOR = (41, 60, 89)
+TEXT = (193, 201, 214)
 
 
 # GAME SCREENS/TEXT
@@ -49,7 +50,7 @@ def start_screen():
     font_md = pygame.font.Font('GamePlayed-vYL7.ttf', 25)
     font_sm = pygame.font.Font('GamePlayed-vYL7.ttf', 14)
 
-    color = BLACK
+    color = TEXT
 
     # display title
     title = font_lg.render('MASTERMIND', True, color)
@@ -128,31 +129,33 @@ def finish_screen(outcome):
     font_lg = pygame.font.Font('GamePlayed-vYL7.ttf', 70)
     font_md = pygame.font.Font('GamePlayed-vYL7.ttf', 25)
 
+    color = TEXT
+
     # player win
     if outcome == 'p':
-        congrats = font_lg.render('CONGRATULATIONS!!', True, BLACK)
+        congrats = font_lg.render('CONGRATULATIONS!!', True, color)
         congrats_rect = congrats.get_rect(center=(WINDOWWIDTH/2, WINDOWHEIGHT/5))
         SCREEN.blit(congrats, congrats_rect)
 
-        you_won = font_lg.render('YOU WON!!', True, BLACK)
+        you_won = font_lg.render('YOU WON!!', True, color)
         you_won_rect = you_won.get_rect(center=(WINDOWWIDTH / 2, (WINDOWHEIGHT / 5) + 150))
         SCREEN.blit(you_won, you_won_rect)
 
     # cpu win
     if outcome == 'c':
-        sorry = font_lg.render('SORRY :(', True, BLACK)
+        sorry = font_lg.render('SORRY :(', True, color)
         sorry_rect = sorry.get_rect(center=(WINDOWWIDTH / 2, WINDOWHEIGHT / 5))
         SCREEN.blit(sorry, sorry_rect)
 
-        you_lost = font_lg.render('YOU LOST', True, BLACK)
+        you_lost = font_lg.render('YOU LOST', True, color)
         you_lost_rect = you_lost.get_rect(center=(WINDOWWIDTH / 2, (WINDOWHEIGHT / 5) + 150))
         SCREEN.blit(you_lost, you_lost_rect)
 
-    play_again = font_md.render('PLAY AGAIN??', True, BLACK)
+    play_again = font_md.render('PLAY AGAIN??', True, color)
     play_again_rect = play_again.get_rect(center=(WINDOWWIDTH / 2, (WINDOWHEIGHT / 5) + 250))
     SCREEN.blit(play_again, play_again_rect)
 
-    press_enter = font_md.render('Press [SPACE] to play again', True, BLACK)
+    press_enter = font_md.render('Press [SPACE] to play again', True, color)
     press_enter_rect = press_enter.get_rect(center=(WINDOWWIDTH / 2, (WINDOWHEIGHT / 5) + 350))
     SCREEN.blit(press_enter, press_enter_rect)
 
@@ -160,25 +163,27 @@ def finish_screen(outcome):
 def main_legend():
     font_sm = pygame.font.Font('GamePlayed-vYL7.ttf', 14)
 
+    color = TEXT
+
     # legend 1
-    legend_1 = font_sm.render('White Tile = correct color in wrong position', True, BLACK)
+    legend_1 = font_sm.render('White Tile = correct color in wrong position', True, color)
     legend_1_rect = legend_1.get_rect(topleft=(150, WINDOWHEIGHT - 130))
     SCREEN.blit(legend_1, legend_1_rect)
 
     # legend 2
-    legend_2 = font_sm.render('Black Tile = correct color in correct position', True, BLACK)
+    legend_2 = font_sm.render('Black Tile = correct color in correct position', True, color)
     legend_2_rect = legend_2.get_rect(topleft=(legend_1_rect.bottomleft[0],
                                                legend_1_rect.bottomleft[1]))
     SCREEN.blit(legend_2, legend_2_rect)
 
     # legend 3
-    legend_3 = font_sm.render('Order of feedback tiles do not correspond to  main tiles', True, BLACK)
+    legend_3 = font_sm.render('Order of feedback tiles do not correspond to  main tiles', True, color)
     legend_3_rect = legend_3.get_rect(topleft=(legend_2_rect.bottomleft[0],
                                                legend_2_rect.bottomleft[1]))
     SCREEN.blit(legend_3, legend_3_rect)
 
     # legend 4
-    legend_4 = font_sm.render('Press [N] at any time to begin a new game', True, BLACK)
+    legend_4 = font_sm.render('Press [N] at any time to begin a new game', True, color)
     legend_4_rect = legend_4.get_rect(topleft=(legend_3_rect.bottomleft[0],
                                                legend_3_rect.bottomleft[1]))
     SCREEN.blit(legend_4, legend_4_rect)
