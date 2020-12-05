@@ -105,21 +105,27 @@ def start_screen():
     SCREEN.blit(rule_5, rule_5_rect)
 
     # rule 6
-    rule_6 = font_sm.render('- Press [ENTER] to submit guessed row', True, color)
+    rule_6 = font_sm.render('- There will be no duplicate colors in the solution', True, color)
     rule_6_rect = rule_6.get_rect(topleft=(rule_5_rect.bottomleft[0],
                                            rule_5_rect.bottomleft[1] + y_buffer))
     SCREEN.blit(rule_6, rule_6_rect)
 
     # rule 7
-    rule_7 = font_sm.render('- Press [N] to reset at any time', True, color)
+    rule_7 = font_sm.render('- Press [ENTER] to submit guessed row', True, color)
     rule_7_rect = rule_7.get_rect(topleft=(rule_6_rect.bottomleft[0],
                                            rule_6_rect.bottomleft[1] + y_buffer))
     SCREEN.blit(rule_7, rule_7_rect)
 
+    # rule 8
+    rule_8 = font_sm.render('- Press [N] to reset at any time', True, color)
+    rule_8_rect = rule_8.get_rect(topleft=(rule_7_rect.bottomleft[0],
+                                           rule_7_rect.bottomleft[1] + y_buffer))
+    SCREEN.blit(rule_8, rule_8_rect)
+
     # begin
     begin = font_md.render('PRESS [SPACE] TO BEGIN', True, color)
-    begin_rect = begin.get_rect(topleft=(rule_7_rect.bottomleft[0],
-                                         rule_7_rect.bottomleft[1] + y_buffer))
+    begin_rect = begin.get_rect(topleft=(rule_8_rect.bottomleft[0],
+                                         rule_8_rect.bottomleft[1] + y_buffer))
 
     SCREEN.blit(begin, begin_rect)
 
@@ -182,8 +188,20 @@ def main_legend():
                                                legend_2_rect.bottomleft[1]))
     SCREEN.blit(legend_3, legend_3_rect)
 
+    # legend 3
+    legend_3 = font_sm.render('Order of feedback tiles do not correspond to  main tiles', True, color)
+    legend_3_rect = legend_3.get_rect(topleft=(legend_2_rect.bottomleft[0],
+                                               legend_2_rect.bottomleft[1]))
+    SCREEN.blit(legend_3, legend_3_rect)
+
     # legend 4
-    legend_4 = font_sm.render('Press [N] at any time to begin a new game', True, color)
+    legend_4 = font_sm.render('There are no duplicates in the solution', True, color)
     legend_4_rect = legend_4.get_rect(topleft=(legend_3_rect.bottomleft[0],
                                                legend_3_rect.bottomleft[1]))
     SCREEN.blit(legend_4, legend_4_rect)
+
+    # legend 5
+    legend_5 = font_sm.render('Press [N] at any time to begin a new game', True, color)
+    legend_5_rect = legend_5.get_rect(topleft=(legend_4_rect.bottomleft[0],
+                                               legend_4_rect.bottomleft[1]))
+    SCREEN.blit(legend_5, legend_5_rect)

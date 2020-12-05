@@ -4,111 +4,128 @@ from setup import *
 from pygame.locals import *
 
 
-# GAME FUNCTIONS
-def game_board():
-    """Initializes main game board matrix structure"""
-    # create game solution
-    game_colors = [RED, YELLOW, BLUE, GREEN, ORANGE, PURPLE]
-    solution = random.sample(game_colors, 4)
+class Game:
+    """Class representing the game"""
+    def __init__(self):
+        self.board = []
+        self.feedback = []
+        self.colors = [RED, YELLOW, BLUE, GREEN, ORANGE, PURPLE]
+        self.solution = random.sample(self.colors, 4)
 
-    # add GameTile sprite for each row and column
-    board = []
-    for i in range(ROWS):
-        columns = []
-        for j in range(COLUMNS):
-            # make top row the solution row
-            if i == 0:
+    # GAME FUNCTIONS
+    def game_board(self):
+        """Initializes main game board matrix structure"""
 
-                # fill color black to hide solution
-                square = GameTile(j, i, BLACK, TILELOC, TILESIZE, LEFTMARGIN, TOPMARGIN, 1)
+        for i in range(ROWS):
+            columns = []
+            for j in range(COLUMNS):
+                # make top row the solution row
+                if i == 0:
+                    # fill color black to hide solution
+                    square = GameTile(j, i, BLACK, TILELOC, TILESIZE, LEFTMARGIN, TOPMARGIN, 1)
 
-                # reassign color to actual solution color
-                square.color = solution[j]
+                    # reassign color to actual solution color
+                    square.color = self.solution[j]
+                    columns.append(square)
 
-                columns.append(square)
-            else:
-                square = GameTile(j, i, TILE, TILELOC, TILESIZE, LEFTMARGIN, TOPMARGIN, 1)
+                else:
+                    square = GameTile(j, i, TILE, TILELOC, TILESIZE, LEFTMARGIN, TOPMARGIN, 1)
 
-                columns.append(square)
+                    columns.append(square)
 
-        board.append(columns)
+            self.board.append(columns)
+        return self.board
 
-    return board
+    def fb_board(self):
+        """Creates feedback matrix structure"""
+        for i in range(1, ROWS):
+            columns = []
+            for j in range(COLUMNS):
 
+                if j > 1:
+                    fb_square = GameTile(j, i, TILE, TILELOC, FBSIZE, FBLEFTMARGIN - 80, FBTOPMARGIN - 30, .5)
+                else:
+                    fb_square = GameTile(j, i, TILE, TILELOC, FBSIZE, FBLEFTMARGIN, FBTOPMARGIN, .5)
+                columns.append(fb_square)
 
-def fb_board():
-    """Creates feedback matrix structure"""
-    feedback = []
-    for i in range(1, ROWS):
-        columns = []
-        for j in range(COLUMNS):
+            self.feedback.append(columns)
 
-            if j > 1:
-                fb_square = GameTile(j, i, TILE, TILELOC, FBSIZE, FBLEFTMARGIN - 80, FBTOPMARGIN - 30, .5)
-            else:
-                fb_square = GameTile(j, i, TILE, TILELOC, FBSIZE, FBLEFTMARGIN, FBTOPMARGIN, .5)
-            columns.append(fb_square)
+        return self.feedback
 
-        feedback.append(columns)
+    def draw_board(self):
+        """draws main board data structure to the screen"""
+        for i in range(len(self.board)):
+            for j in range(len(self.board[i])):
+                square = self.board[i][j]
+                square.draw()
 
-    return feedback
+    def draw_feedback(self):
+        """draws feedback data structure to the screen"""
+        for i in range(len(self.feedback)):
+            for j in range(len(self.feedback[i])):
+                fb_square = self.feedback[i][j]
+                fb_square.draw()
 
+    def assign_feedback(self, row):
+        """colors feedback tiles based on user input"""
+        # get game arrays
+        sol = [tile.color for tile in self.board[0]]
+        guess = [tile.color for tile in self.board[row]]
+        result = self.feedback[row - 1]
 
-def draw_board(board):
-    """draws main board data structure to the screen"""
-    for i in range(len(board)):
-        for j in range(len(board[i])):
-            square = board[i][j]
-            square.draw()
+        # array of indices to randomize black and white tiles
+        choices = [0, 1, 2, 3]
+        for i in range(len(sol)):
+            if sol[i] == guess[i]:
+                choice = random.choice(choices)
+                result[choice].update(BLACK)
+                choices.remove(choice)
 
+            elif sol[i] in guess:
+                choice = random.choice(choices)
+                result[choice].update(WHITE)
+                choices.remove(choice)
 
-def draw_feedback(feedback):
-    """draws feedback data structure to the screen"""
-    for i in range(len(feedback)):
-        for j in range(len(feedback[i])):
-            fb_square = feedback[i][j]
-            fb_square.draw()
+        # if all tiles match
+        result = [tile.color for tile in result]
+        if result == [BLACK, BLACK, BLACK, BLACK]:
+            return True
 
+    def reveal_solution(self):
+        """reveals solution when game has ended"""
+        sol_row = self.board[0]
+        for i in range(len(sol_row)):
+            sol_row[i].update(sol_row[i].color)
 
-def assign_feedback(board, feedback, row):
-    """colors feedback tiles based on user input"""
-    # get game arrays
-    sol = [tile.color for tile in board[0]]
-    guess = [tile.color for tile in board[row]]
-    result = feedback[row - 1]
-
-    # array of indices to randomize black and white tiles
-    choices = [0, 1, 2, 3]
-    for i in range(len(sol)):
-        if sol[i] == guess[i]:
-            choice = random.choice(choices)
-            result[choice].update(BLACK)
-            choices.remove(choice)
-
-        elif sol[i] in guess:
-            choice = random.choice(choices)
-            result[choice].update(WHITE)
-            choices.remove(choice)
-
-    # if all tiles match
-    result = [tile.color for tile in result]
-    if result == [BLACK, BLACK, BLACK, BLACK]:
+    def check_complete(self, row):
+        """Checks if a row is complete"""
+        for tile in self.board[row]:
+            if tile.color == TILE:
+                return False
         return True
 
+    def verification(self):
+        """
+        verification algorithm, given the board a solution can be proved
+        in polynomial time
+        """
+        # tracks both verification steps
+        verified = 0
 
-def reveal_solution(board):
-    """reveals solution when game has ended"""
-    sol_row = board[0]
-    for i in range(len(sol_row)):
-        sol_row[i].update(sol_row[i].color)
+        # check each feedback row
+        for row in self.feedback:
+            if [x.color for x in row] == [BLACK, BLACK, BLACK, BLACK]:
+                verified += 1
 
+        # check each guess row
+        for i in range(1, len(self.board)):
+            if [x.color for x in self.board[i]] == self.solution:
+                verified += 1
 
-def check_complete(board, row):
-    """Checks if a row is incomplete"""
-    for tile in board[row]:
-        if tile.color == TILE:
+        if verified == 2:
+            return True
+        else:
             return False
-    return True
 
 
 # TILE SPRITE CLASSES
@@ -139,6 +156,8 @@ class GameTile(pygame.sprite.Sprite):
         """updates tile"""
         self.image.fill(color)
         self.color = color
+
+        # adds border to tile
         pygame.draw.rect(SCREEN, BLACK, ((self.loc * self.rect.x * self.buff) + self.xm,
                                          (self.loc * self.rect.y) + self.ym, self.size, self.size), 10)
         self.draw()
@@ -160,8 +179,9 @@ def main():
     intro = True
 
     # initialize game and feedback board
-    board = game_board()
-    feedback = fb_board()
+    game = Game()
+    board = game.game_board()
+    game.fb_board()
 
     # set turn counter to last row
     turn_counter = ROWS - 1
@@ -202,8 +222,8 @@ def main():
                 main_legend()
 
                 # draw boards to screen
-                draw_board(board)
-                draw_feedback(feedback)
+                game.draw_board()
+                game.draw_feedback()
 
                 # borders first tile
                 board[turn_counter][key_pos].update(tile_colors[color_index])
@@ -224,7 +244,7 @@ def main():
 
                     if keys[K_UP] and color_index < 6:
                         color_index += 1
-                        
+
                     if keys[K_DOWN] and color_index > 1:
                         color_index -= 1
 
@@ -232,22 +252,22 @@ def main():
                     board[turn_counter][key_pos].update(tile_colors[color_index])
 
                     # If Enter pressed, assign feedback, decrement turn_counter
-                    if keys[K_RETURN] and turn_counter >= 1 and check_complete(board, turn_counter):
-
+                    if keys[K_RETURN] and turn_counter >= 1 and game.check_complete(turn_counter):
                         color_index = 0
 
                         # if player wins
-                        if assign_feedback(board, feedback, turn_counter):
+                        if game.assign_feedback(turn_counter) and game.verification():
+
                             game_over = True
-                            reveal_solution(board)
+                            game.reveal_solution()
                             finish_screen('p')
                         else:
                             turn_counter -= 1
                             key_pos = 0
 
                     # if cpu wins
-                    if turn_counter < 1:
-                        reveal_solution(board)
+                    if turn_counter < 1 and not game.verification():
+                        game.reveal_solution()
                         game_over = True
                         finish_screen('c')
                         turn_counter += 1

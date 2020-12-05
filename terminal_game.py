@@ -47,12 +47,11 @@ class Game:
         """returns correct solution"""
         return self.solution
 
-    def guess_row(self, color1, color2, color3, color4):
+    def guess_row(self, guess):
         """valid game move"""
         if self.game_over:
             return False
 
-        guess = [color1, color2, color3, color4]
         result = self.feedback(guess)
         row = (guess, result)
 
@@ -63,10 +62,16 @@ class Game:
         if self.verification(guess, result):
             self.game_over = True
             self.player_win = True
+            self.feedback(guess)
+            pprint.pprint(self.board)
+            print('Congratulations! You won!')
 
         if self.guess_counter < 0:
             self.game_over = True
             self.comp_p2_win = True
+            print('Sorry you lost!')
+
+        pprint.pprint(self.board)
 
         return True
 
@@ -147,19 +152,18 @@ if __name__ == '__main__':
         game = Game(1, allow_duplicates)
         game.create_solution()
 
-    game.solution = ['Y', 'O', 'B', 'R']
     pprint.pprint(game.get_board())
-    print(game.guess_row('Y', 'Y', 'Y', 'Y'))
-    print(game.guess_row('Y', 'W', 'O', 'O'))
-    print(game.guess_row('Y', 'W', 'O', 'O'))
-    print(game.guess_row('Y', 'O', 'B', 'R'))
-    print(game.guess_row('Y', 'W', 'O', 'O'))
-    print(game.guess_row('Y', 'W', 'O', 'O'))
-    print(game.guess_row('Y', 'W', 'O', 'O'))
-    print(game.guess_row('Y', 'O', 'O', 'O'))
-    pprint.pprint(game.get_board())
+    game.solution = ['R', 'B', 'G', 'Y']
+    row = []
+    for j in range(8):
 
-    print(f'Guess Counter: {game.guess_counter}')
-    print(f'Game Over? {game.game_over}')
-    print(f'Player Win? {game.player_win}')
-    print(f'Computer Win? {game.comp_p2_win}')
+        for i in range(4):
+            guess = input("Input 4 letters representing the colors for your guess (R, B, Y, G, O, W)")
+            row.append(guess)
+
+        game.guess_row(row)
+        if game.game_over:
+            break
+
+        row = []
+
