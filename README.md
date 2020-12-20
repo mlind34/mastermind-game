@@ -24,3 +24,5 @@ Requirements: Python3
 # Screenshots
 
 ![Screen Shot 2020-12-20 at 12 47 53 PM](https://user-images.githubusercontent.com/50970364/102721651-bbb11c80-42c1-11eb-9262-05397d4f49ef.png)
+
+![Screen Shot 2020-12-20 at 12 53 02 PM](https://user-images.githubusercontent.com/50970364/102721740-5ad61400-42c2-11eb-93cc-231d73dde4c6.png)
