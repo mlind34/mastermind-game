@@ -20,3 +20,7 @@ Requirements: Python3
 3. Create a virtual environment (optional)
 4. pip3 install -r requirements.txt
 5. python3 mastermind.py
+
+# Screenshots
+
+![Screen Shot 2020-12-20 at 12 47 53 PM](https://user-images.githubusercontent.com/50970364/102721651-bbb11c80-42c1-11eb-9262-05397d4f49ef.png)
